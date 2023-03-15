@@ -5,5 +5,5 @@ import com.example.repogithublist.domain.model.Repository
 import kotlinx.coroutines.flow.Flow
 
 interface GetRepositoriesUseCaseInt {
-    suspend fun invoke(): Flow<Response<List<Repository>>>
+    suspend fun invoke(page: Int): Flow<Response<List<Repository>>>
 }

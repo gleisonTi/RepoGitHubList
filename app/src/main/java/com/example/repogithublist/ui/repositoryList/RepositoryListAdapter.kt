@@ -25,6 +25,7 @@ class RepositoryListAdapter(private val context: Context, var itemList: ArrayLis
         )
     }
 
+
     override fun onBindViewHolder(holder: RepositoryListViewHolder, position: Int) {
         val currentRepo = itemList[position]
 

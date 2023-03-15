@@ -18,9 +18,9 @@ class RepositoriesViewModel @Inject constructor(
     private val repositoryValues = MutableStateFlow(RepositoryListState())
     var _repositoryValues : StateFlow<RepositoryListState> = repositoryValues
 
-    fun getAllRepositoriesData() {
+    fun getAllRepositoriesData(page: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            getRepositoriesUseCase.invoke().collect {
+            getRepositoriesUseCase.invoke(page).collect {
                 when (it) {
                     is Response.Success -> {
                         repositoryValues.value =
