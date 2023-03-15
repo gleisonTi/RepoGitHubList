@@ -3,6 +3,7 @@ package com.example.repogithublist.di
 import com.example.repogithublist.data.apis.ApiGitHubService
 import com.example.repogithublist.data.helper.Constants
 import com.example.repogithublist.data.repository.RepGitRepository
+import com.example.repogithublist.domain.GetRepositoriesUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,5 +31,10 @@ object AppModule {
     @Singleton
     fun provideRepGitRepositoy( apiGitHubService: ApiGitHubService) : RepGitRepository =
         RepGitRepository(apiGitHubService)
+
+    @Provides
+    @Singleton
+    fun provideGetRepositoriesUseCase(repGitRepository: RepGitRepository) : GetRepositoriesUseCase =
+        GetRepositoriesUseCase(repGitRepository)
 
 }

@@ -18,21 +18,23 @@ class RepositoriesViewModel @Inject constructor(
     private val repositoryValues = MutableStateFlow(RepositoryListState())
     var _repositoryValues : StateFlow<RepositoryListState> = repositoryValues
 
-    fun getAllRepositoriesData() = viewModelScope.launch(Dispatchers.IO) {
-        getRepositoriesUseCase.invoke().collect {
-            when(it){
-                is Response.Success -> {
-                    repositoryValues.value = RepositoryListState( repositoryList = it.data?: emptyList())
-                }
-                is Response.Loading -> {
-                    repositoryValues.value = RepositoryListState( isLoading = true)
-                }
-                is Response.Error -> {
-                    repositoryValues.value = RepositoryListState( error = it.errorMessage?: "Erro Inesperado")
-
+    fun getAllRepositoriesData() {
+        viewModelScope.launch(Dispatchers.IO) {
+            getRepositoriesUseCase.invoke().collect {
+                when (it) {
+                    is Response.Success -> {
+                        repositoryValues.value =
+                            RepositoryListState(repositoryList = it.data ?: emptyList())
+                    }
+                    is Response.Loading -> {
+                        repositoryValues.value = RepositoryListState(isLoading = true)
+                    }
+                    is Response.Error -> {
+                        repositoryValues.value =
+                            RepositoryListState(error = it.errorMessage ?: "Erro Inesperado")
+                    }
                 }
             }
         }
     }
-
 }

@@ -1,5 +1,6 @@
 package com.example.repogithublist.domain
 
+import android.util.Log
 import com.example.repogithublist.data.helper.Response
 import com.example.repogithublist.data.repository.RepGitRepository
 import com.example.repogithublist.domain.model.Repository
@@ -9,12 +10,12 @@ import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
 
-class GetRepositoriesUseCase @Inject constructor(private val repGitRepository: RepGitRepository ) : GetRepositoriesUsecaseInt
+class GetRepositoriesUseCase @Inject constructor(private val repGitRepository: RepGitRepository ) : GetRepositoriesUseCaseInt
 {
     override suspend fun invoke(): Flow<Response<List<Repository>>> = flow {
         try {
             emit(Response.Loading())
-            val listRepository = repGitRepository.getAllRepositories().body()?.items?.map {
+            val listRepository = repGitRepository.getAllRepositories(1).body()?.items?.map {
                 Repository(
                     name = it.full_name,
                     author = it.owner.login,

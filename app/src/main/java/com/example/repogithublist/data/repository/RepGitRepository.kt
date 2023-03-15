@@ -6,7 +6,9 @@ import javax.inject.Inject
 class RepGitRepository @Inject
 constructor(
     private val apiGitHubService: ApiGitHubService
-)
+): RepoGitRepositoryInt
 {
-    suspend fun getAllRepositories() = apiGitHubService.getRepositories()
+    override suspend fun getAllRepositories(page: Int) = apiGitHubService.getRepositories(page = page)
 }
+
+
