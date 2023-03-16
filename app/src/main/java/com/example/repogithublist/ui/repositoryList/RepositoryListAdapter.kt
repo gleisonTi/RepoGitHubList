@@ -1,16 +1,16 @@
 package com.example.repogithublist.ui.repositoryList
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.repogithublist.databinding.RecyclerviewRepositoryItemBinding
-import com.example.repogithublist.domain.model.Repository
+import com.example.repogithublist.paging.model.Repository
 
-class RepositoryListAdapter(private val context: Context, var itemList: ArrayList<Repository>):
-    RecyclerView.Adapter<RepositoryListAdapter.RepositoryListViewHolder>() {
-
+class RepositoryListAdapter():
+    PagingDataAdapter<Repository,RepositoryListAdapter.RepositoryListViewHolder>(diffCallback) {
 
     inner class RepositoryListViewHolder(binding: RecyclerviewRepositoryItemBinding):
         RecyclerView.ViewHolder(binding.root) {
@@ -20,24 +20,37 @@ class RepositoryListAdapter(private val context: Context, var itemList: ArrayLis
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RepositoryListViewHolder {
         return RepositoryListViewHolder(
             RecyclerviewRepositoryItemBinding.inflate(
-                LayoutInflater.from(context), parent, false
+                LayoutInflater.from(parent.context), parent, false
             )
         )
     }
 
 
     override fun onBindViewHolder(holder: RepositoryListViewHolder, position: Int) {
-        val currentRepo = itemList[position]
+        val currentRepo = getItem(position)
 
         holder.binding.apply {
-            nameRepository.text = currentRepo.name
-            authorRepository.text = currentRepo.author
-            imageView.load(currentRepo.image)
-            starCount.text = currentRepo.stargazersCount.toString()
-            forkCount.text = currentRepo.forksCount.toString()
+            currentRepo?.run {
+                nameRepository.text = name
+                authorRepository.text = author
+                imageView.load(image)
+                starCount.text = stargazersCount.toString()
+                forkCount.text = forksCount.toString()
+            }
+
         }
     }
 
-    override fun getItemCount() = itemList.size
+    companion object {
+        val diffCallback = object : DiffUtil.ItemCallback<Repository>() {
+            override fun areItemsTheSame(oldItem: Repository, newItem: Repository): Boolean {
+                return oldItem.name == newItem.name
+            }
+
+            override fun areContentsTheSame(oldItem: Repository, newItem: Repository): Boolean {
+                return oldItem == newItem
+            }
+        }
+    }
 
 }

@@ -1,6 +1,6 @@
 package com.example.repogithublist.ui.repositoryList
 
-import com.example.repogithublist.domain.model.Repository
+import com.example.repogithublist.paging.model.Repository
 
 data class RepositoryListState(
     val isLoading: Boolean = false,

@@ -1,4 +1,4 @@
-package com.example.repogithublist.domain.model
+package com.example.repogithublist.paging.model
 
 data class Repository(
     val name: String,

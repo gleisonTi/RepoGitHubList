@@ -2,39 +2,20 @@ package com.example.repogithublist.ui.repositoryList
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.repogithublist.data.helper.Response
-import com.example.repogithublist.domain.GetRepositoriesUseCase
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.cachedIn
+import com.example.repogithublist.data.apis.ApiGitHubService
+import com.example.repogithublist.paging.RepoGitHubPagingSource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class RepositoriesViewModel @Inject constructor(
-    private val getRepositoriesUseCase: GetRepositoriesUseCase
+    private val apiGitHubService: ApiGitHubService
 ): ViewModel() {
-    private val repositoryValues = MutableStateFlow(RepositoryListState())
-    var _repositoryValues : StateFlow<RepositoryListState> = repositoryValues
+    val repositoryListData = Pager(PagingConfig(pageSize = 1)) {
+        RepoGitHubPagingSource(apiGitHubService)
+    }.flow.cachedIn(viewModelScope)
 
-    fun getAllRepositoriesData(page: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
-            getRepositoriesUseCase.invoke(page).collect {
-                when (it) {
-                    is Response.Success -> {
-                        repositoryValues.value =
-                            RepositoryListState(repositoryList = it.data ?: emptyList())
-                    }
-                    is Response.Loading -> {
-                        repositoryValues.value = RepositoryListState(isLoading = true)
-                    }
-                    is Response.Error -> {
-                        repositoryValues.value =
-                            RepositoryListState(error = it.errorMessage ?: "Erro Inesperado")
-                    }
-                }
-            }
-        }
-    }
 }
