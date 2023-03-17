@@ -3,10 +3,11 @@ package com.example.repogithublist.paging
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.repogithublist.data.apis.ApiGitHubService
+import com.example.repogithublist.data.repository.RepGitRepository
 import com.example.repogithublist.paging.model.Repository
 
 class RepoGitHubPagingSource (
-    private val apiGitHubService: ApiGitHubService
+    private val repGitRepository: RepGitRepository
 ) : PagingSource<Int, Repository>() {
     override fun getRefreshKey(state: PagingState<Int, Repository>): Int? {
         return null
@@ -15,7 +16,7 @@ class RepoGitHubPagingSource (
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Repository> {
         return try {
             val currentPage = params.key ?: 1
-            val response = apiGitHubService.getRepositories(currentPage)
+            val response = repGitRepository.getAllRepositories(currentPage)
             val responseData = mutableListOf<Repository>()
             val data = response.body()?.items?.map{
                 Repository(
